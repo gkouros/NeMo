@@ -72,7 +72,7 @@ if ${ENABLE_OCCLUDED}; then
                 --save_path_train "" --save_path_val "${PATH_CACHE_TESTING_SET_OCC}" \
                 --occ_data_path "${PATH_OCCLUDED_PASCAL3DP}"
     done
-fi 
+fi
 
 
 ####################################################################################################
@@ -104,10 +104,4 @@ if ${ENABLE_OCCLUDED}; then
                     --occ_level "${OCC_LEVEL}" --mesh_d "${MESH_D}"
         done
     done
-fi 
-
-
-
-
-
-
+fi

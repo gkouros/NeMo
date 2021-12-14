@@ -1,4 +1,8 @@
 #!/bin/bash
+source /users/visics/gkouros/.bashrc
+dir=/users/visics/gkouros/projects/nemo
+cd $dir
+
 get_abs_filename() {
     # $1 : relative filename
     echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
@@ -72,6 +76,10 @@ if ${ENABLE_OCCLUDED}; then
                 --occ_data_path "${PATH_OCCLUDED_PASCAL3DP}"
     done
 fi
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 ####################################################################################################
 # Process meshes
@@ -102,3 +110,10 @@ if ${ENABLE_OCCLUDED}; then
         done
     done
 fi
+<<<<<<< Updated upstream
+=======
+
+# deactivate virtual environment
+conda deactivate
+
+>>>>>>> Stashed changes

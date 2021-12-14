@@ -1,0 +1,19 @@
+Universe = vanilla
+
+RequestCpus = 8
+Request_GPUs = 1
+RequestMemory = 4Gb
++RequestWalltime = 86400
+
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 8000.0)&&(machine != "andromeda.esat.kuleuven.be")&&(machine != "lesath.esat.kuleuven.be")&&(machine != "tyl.esat.kuleuven.be")
+
+Initialdir = /users/visics/gkouros/projects/nemo
+Executable = /users/visics/gkouros/projects/nemo/PrepareData.sh
+
+Log    =  logs/nemo_data_generation.log
+Output =  logs/nemo_data_generation.out
+Error  =  logs/nemo_data_generation.err
+
+Notification = Complete
+Queue 1
+

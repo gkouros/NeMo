@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../code/lib')
+sys.path.append('../code')
 
 
 import torch
@@ -18,9 +18,10 @@ image_size = (256, 672)
 
 
 anno_path = '../final_pred.npz'
-img_path = 'path_to_dataset'
+img_path = '../data/PASCAL3D+_release1.1'
 
-mesh_path = 'path_to_mesh'
+cate = 'car'
+mesh_path = '../data/PASCAL3D+_release1.1/CAD/%s/01.off' % cate
 
 
 class CustomedCrop(object):

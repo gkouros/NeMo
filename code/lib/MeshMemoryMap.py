@@ -6,7 +6,7 @@ import numpy as np
 from CalculateOcc import cal_occ_one_image
 
 
-mesh_path = '../PASCAL3D/PASCAL3D+_release1.1/CAD_d4/car/'
+mesh_path = '../../PASCAL3D/PASCAL3D+_release1.1/CAD/car/'
 
 
 def normalization(value):
@@ -17,6 +17,8 @@ def box_include_2d(self_box, other):
                           np.logical_and(self_box.bbox[1][0] <= other[:, 1], other[:, 1] < self_box.bbox[1][1]))
 
 class MeshLoader(object):
+    ''' loads all the meshes for a category of objects '''
+
     def __init__(self, path=mesh_path):
         file_list = os.listdir(path)
 
@@ -39,12 +41,13 @@ class MeshLoader(object):
 
 
 class MeshConverter(object):
+    ''' Project a CAD model to a 2D image '''
     def __init__(self, path=mesh_path):
         self.loader = MeshLoader(path=path)
 
     def get_one(self, annos, return_distance=False):
         off_idx = get_anno(annos, 'cad_index')
-        
+
         points_3d, triangles = self.loader[off_idx - 1]
         points_2d = Projector3Dto2D(annos)(points_3d).astype(np.int32)
         points_2d = np.flip(points_2d, axis=1)
@@ -61,7 +64,7 @@ class MeshConverter(object):
         box_cropped.set_boundary(get_anno(annos, 'box_obj').astype(np.int)[4::].tolist())
 
         if_visible = np.logical_and(if_visible, box_include_2d(box_ori, points_2d))
-        
+
         projection_foo = bbt.projection_function_by_boxes(box_ori, box_cropped)
 
         pixels_2d = projection_foo(points_2d)
@@ -79,10 +82,10 @@ class MeshConverter(object):
 if __name__ == '__main__':
     from PIL import Image, ImageDraw
     name_ = 'n02814533_11997.JPEG'
-    anno_path = '../PASCAL3D/annotations/car/'
+    anno_path = '../../PASCAL3D/PASCAL3D_NeMo/annotations/car/'
     converter = MeshConverter()
     pixels, visibile, distance = converter.get_one(np.load(os.path.join(anno_path, name_.split('.')[0] + '.npz'), allow_pickle=True), return_distance=True)
-    image = Image.open('../PASCAL3D/images/car/' + name_)
+    image = Image.open('../../PASCAL3D/PASCAL3D_NeMo/images/car/' + name_)
 
     imd = ImageDraw.ImageDraw(image)
 
@@ -96,7 +99,7 @@ if __name__ == '__main__':
         imd.ellipse(box.pillow_bbox(), fill=color)
     image.show()
 
-    image = Image.open('../PASCAL3D/images/car/' + name_)
+    image = Image.open('../../PASCAL3D/PASCAL3D_NeMo/images/car/' + name_)
 
     imd = ImageDraw.ImageDraw(image)
 

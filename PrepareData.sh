@@ -76,10 +76,6 @@ if ${ENABLE_OCCLUDED}; then
                 --occ_data_path "${PATH_OCCLUDED_PASCAL3DP}"
     done
 fi
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 ####################################################################################################
 # Process meshes
@@ -110,10 +106,6 @@ if ${ENABLE_OCCLUDED}; then
         done
     done
 fi
-<<<<<<< Updated upstream
-=======
 
 # deactivate virtual environment
 conda deactivate
-
->>>>>>> Stashed changes

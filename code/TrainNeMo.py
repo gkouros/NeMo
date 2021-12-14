@@ -158,6 +158,7 @@ for epoch in range(args.total_epochs):
             index = torch.Tensor([[k for k in range(y_num)]] * img.shape[0])
             index = index.cuda()
 
+            # project input image to embedding space
             features = net.forward(img, keypoint_positions=keypoint, obj_mask=1 - obj_mask)
 
             # get: [n, k, l]

@@ -68,8 +68,10 @@ class Pascal3DPlus(Dataset):
         return len(self.file_list)
 
     def __getitem__(self, item):
+        # get next img name
         name_img = self.file_list[item]
 
+        # get img if in cache else load it from file
         if name_img in self.cache_anno.keys():
             annotation_file = self.cache_anno[name_img]
             img = self.cache_img[name_img]
@@ -82,34 +84,48 @@ class Pascal3DPlus(Dataset):
             annotation_file = np.load(os.path.join(self.annotation_path, name_img.split('.')[0] + '.npz'),
                                       allow_pickle=True)
 
+            # if cache is enabled store img in dictionary
             if self.enable_cache:
                 self.cache_anno[name_img] = dict(annotation_file)
                 self.cache_img[name_img] = img
 
+        # get bounding box annotation
         box_obj = bbt.from_numpy(annotation_file['box_obj'])
+        # get mask from bounding box
         obj_mask = np.zeros(box_obj.boundary, dtype=np.float32)
         box_obj.assign(obj_mask, 1)
 
+        # get keypoints list annotation
         kp = annotation_file['cropped_kp_list']
-        iskpvisible = annotation_file['visible'] == 1
+        # get visibility flag of keypoints
+        iskpvisible = annotation_file['visible'] == 1 # 1-> visible, 2->occluded, 0->cropped?
 
+        # weight keypoints if flag is set and there are weights in the annotation
         if self.weighted:
             iskpvisible = iskpvisible * annotation_file['kp_weights']
 
+        # if not for testing but for training?
         if not self.for_test:
+            # if all points are visible set visible flag
             iskpvisible = np.logical_and(iskpvisible, np.all(kp >= np.zeros_like(kp), axis=1))
+            # ensure all keypoints are within image space
             iskpvisible = np.logical_and(iskpvisible, np.all(kp < np.array([img.size[::-1]]), axis=1))
 
+        # clip keypoints to [0,0]-[h,w]
         kp = np.max([np.zeros_like(kp), kp], axis=0)
         kp = np.min([np.ones_like(kp) * (np.array([img.size[::-1]]) - 1), kp], axis=0)
 
+        # extract image name from filename
         this_name = name_img.split('.')[0]
 
+        # arrange pose into an array [distance, elevation, azimuth, theta]
         pose_ = np.array([5, annotation_file['elevation'], annotation_file['azimuth'], annotation_file['theta']], dtype=np.float32)
 
+        # arrange data into a dictionary
         sample = {'img': img, 'kp': kp, 'iskpvisible': iskpvisible, 'this_name': this_name, 'obj_mask': obj_mask,
                   'box_obj': box_obj.shape, 'pose': pose_}
 
+        # apply transformations (hflip, norm, tensor, color jitter)
         if self.transforms:
             sample = self.transforms(sample)
         return sample

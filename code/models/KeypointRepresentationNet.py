@@ -193,7 +193,7 @@ class NetE2E(nn.Module):
         self.converter = GlobalLocalConverter(local_size)
         self.noise_on_mask = noise_on_mask
 
-        # output_dimension == -1 for abilation study.
+        # output_dimension == -1 for ablation study.
         if self.output_dimension == -1:
             self.out_layer = None
         else:

@@ -93,6 +93,7 @@ subtypes = ['mesh%02d' % (i + 1) for i in range(len(n_list))]
 
 # net = NetE2E(net_type='resnet50', local_size=args.local_size,
 #              output_dimension=args.d_feature, reduce_function=None, n_noise_points=args.num_noise, pretrain = True)
+# Create model
 net = NetE2E(net_type=args.backbone, local_size=args.local_size,
              output_dimension=args.d_feature, reduce_function=None, n_noise_points=args.num_noise, pretrain=True)
 
@@ -145,7 +146,7 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
     anno_path = 'annotations3D_%s' % mesh_d
 
     Pascal3D_dataset = Pascal3DPlus(transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
-                                      subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path, 
+                                      subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
                                       list_path=list_path, weighted=True, data_pendix=args.data_pendix)
     Pascal3D_dataloader = torch.utils.data.DataLoader(Pascal3D_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
 
@@ -160,8 +161,10 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
             img, keypoint, iskpvisible, this_name, box_obj = sample['img'], sample['kp'], sample['iskpvisible'], sample['this_name'], sample['box_obj']
             img = img.cuda()
 
+            # calculate RGB image feature map using backbone #1
             feature_map = net.module.forward_test(img)
 
+            # append features for saving
             if save_features is not None:
                 for i, n in enumerate(this_name):
                     get[n] = feature_map[i].detach().cpu().numpy()
@@ -181,31 +184,31 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
                 stride_ = net_stride[args.backbone]
                 obj_mask = F.max_pool2d(obj_mask.unsqueeze(dim=1), kernel_size=stride_, stride=stride_, padding=(stride_ - 1) // 2)
 
-                hmap = hmap * obj_mask     
+                hmap = hmap * obj_mask
 
                 # [n, k, h,w]
                 x_ = hmap.size(3)
                 hmap = hmap.view(*hmap.shape[0:2], -1)
-                
+
                 _, max_ = torch.max(hmap, dim=2)
                 max_idx = torch.zeros((*hmap.shape[0:2], 2), dtype=torch.long).to(hmap.device)
                 max_idx[:, :, 0] = max_ // x_
                 max_idx[:, :, 1] = max_ % x_
-                
+
                 max_idx = max_idx * stride_ + stride_ // 2
-                
+
                 # [n, k]
                 distance = torch.sum((max_idx - keypoint) ** 2, dim=2) ** 0.5
-                
+
                 # [n, k]
                 correct_keypoints = (distance <= thr * torch.max(box_obj[0], box_obj[1]).view(-1, 1).cuda()).type(torch.long).to(iskpvisible.device)
-                
+
                 # [k]
                 correct_keypoints = torch.sum(iskpvisible * correct_keypoints, dim=0).cpu()
-                
+
                 # [k]
                 visible_keypoints = torch.sum(iskpvisible, dim=0).cpu()
-                
+
                 all_visible += visible_keypoints.type(torch.long)
                 all_correct += correct_keypoints.type(torch.long)
 
@@ -217,7 +220,7 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
 def find_2nd(string, substring):
    return string.find(substring, string.find(substring) + 1)
 
-
+# save features
 if save_features is not None:
     os.makedirs(save_features[0:find_2nd(save_features, '/')], exist_ok=True)
     np.savez(save_features, **get)

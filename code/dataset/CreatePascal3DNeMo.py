@@ -30,6 +30,7 @@ args.overwrite = args.overwrite == 'True'
 categories = ['aeroplane', 'bicycle', 'boat', 'bottle', 'bus', 'car', 'chair', 'diningtable', 'motorbike', 'sofa', 'train', 'tvmonitor']
 
 dataset = 'imagenet'
+# contains none or one of 'train', 'val' or both
 set_types = (['train'] if len(args.save_path_train) > 0 else []) + (['val'] if len(args.save_path_val) > 0 else [])
 to_size = 224
 
@@ -41,6 +42,7 @@ mesh_para_names = list(set(mesh_para_names)) + ['cad_index', 'bbox']
 
 
 def get_anno(record, *args, idx=0):
+    """ read annotation dictionary and save data to variables """
     out = []
     for key_ in args:
         if key_ == 'height':
@@ -67,20 +69,25 @@ def get_anno(record, *args, idx=0):
 
 
 print('Creating dataset, finished: ', end='')
+
+# for each object category create a processed copy
 for category in categories:
     print('%s' % category, end=' ')
     # print(category)
+
+    # get keypoints for current object category
     kp_list = kp_list_dict[category]
 
+    # process training and validation sets
     for set_type in set_types:
         if set_type == 'train':
             this_size = top_50_size_dict[category]
-            out_shape = [((this_size[0] - 1) // 32 + 1) * 32, ((this_size[1] - 1) // 32 + 1) * 32]
         else:
             # this_size = max_size_dict[category]
             this_size = top_50_size_dict[category]
-            out_shape = [((this_size[0] - 1) // 32 + 1) * 32, ((this_size[1] - 1) // 32 + 1) * 32]
-        out_shape = [int(out_shape[0]), int(out_shape[1])]
+
+        out_shape = [int(((this_size[0] - 1) // 32 + 1) * 32),
+                     int(((this_size[1] - 1) // 32 + 1) * 32)]
         # Kp_list
         if set_type == 'train':
             save_image_path = save_root['train'] + 'images/%s/' % (category + args.data_pendix)
@@ -91,9 +98,9 @@ for category in categories:
             save_annotation_path = save_root['val'] + 'annotations/%s/' % (category + args.data_pendix)
             save_list_path = save_root['val'] + 'lists/%s/' % (category + args.data_pendix)
 
-        os.makedirs(save_image_path, exist_ok=True)
-        os.makedirs(save_annotation_path, exist_ok=True)
-        os.makedirs(save_list_path, exist_ok=True)
+        os.makedirs(save_image_path, exist_ok=True)  # location to save processed images
+        os.makedirs(save_annotation_path, exist_ok=True)  # location to save processed annotations
+        os.makedirs(save_list_path, exist_ok=True)  # location to save processed 
 
         # Path
         list_dir = os.path.join(dataset_root, 'Image_sets')

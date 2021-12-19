@@ -62,7 +62,7 @@ if ${ENABLE_OCCLUDED}; then
 fi
 
 ####################################################################################################
-Run dataset creator
+# Run dataset creator
 echo "Create raw Pascal3D+ dataset!"
 python3 ./code/dataset/CreatePascal3DNeMo.py --overwrite False --source_path "${PATH_PASCAL3DP}" \
         --save_path_train "${PATH_CACHE_TRAINING_SET}" --save_path_val "${PATH_CACHE_TESTING_SET}"

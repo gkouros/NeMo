@@ -134,10 +134,6 @@ if __name__ == '__main__':
                     azimuth = float(annotation[14]) + np.pi + np.arctan(c3d[2] / c3d[0])
                 else:
                     azimuth = (float(annotation[14]) + np.arctan(c3d[2] / c3d[0])) % (2 * np.pi)
-                # print(annotations)
-                # print(azimuth, float(annotation[3]))
-                # continue
-                # asd
 
                 # calculate camera elevation
                 elevation = -np.arcsin(c3d[1] / distance_)
@@ -213,6 +209,6 @@ if __name__ == '__main__':
         with open(os.path.join(save_list_dir, cate + '_%s.txt' % occ_level_mapping[this_occ_lv]), 'w') as file_handel:
             file_handel.write(''.join(out_name))
 
-        for kk in range(4):
-            with open(os.path.join(save_list_dir, cate + '_%s_folder%d.txt' % (occ_level_mapping[this_occ_lv], kk)), 'w') as  file_handel:
-                file_handel.write(''.join([t for i, t in enumerate(out_name) if i % 4 == kk]))
+        # for kk in range(4):
+        #     with open(os.path.join(save_list_dir, cate + '_%s_folder%d.txt' % (occ_level_mapping[this_occ_lv], kk)), 'w') as  file_handel:
+        #         file_handel.write(''.join([t for i, t in enumerate(out_name) if i % 4 == kk]))

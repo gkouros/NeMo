@@ -3,3 +3,4 @@ exp
 data
 **__pycache__
 PASCAL3D
+*.code-workspace

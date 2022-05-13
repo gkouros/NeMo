@@ -1,4 +1,8 @@
 #!/bin/bash
+
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate nemo
+
 get_abs_filename() {
   # $1 : relative filename
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
@@ -10,11 +14,12 @@ EXPROOT="${ROOT}/exp/KITTI3D"
 
 MESH_DIMENSIONS="single"
 GPUS="0" #, 1, 2, 3, 4, 5, 6, 7"
-OCC_LEVEL="fully_visible"
-# OCC_LEVEL="partly_occluded"
-# OCC_LEVEL="largely_occluded"
+# OCC_LEVEL="fully_visible"
+OCC_LEVEL="partly_occluded"
+OCC_LEVEL="largely_occluded"
 
 PATH_KITTI3D="${DATAROOT}/KITTI3D_NeMo/"
+PATH_PASCAL3DP="${DATAROOT}/pascal3d/PASCAL3D+_release1.1/"
 TRAINED_NETWORK_PATH="${EXPROOT}/../PASCAL3D/NeMo_${MESH_DIMENSIONS}/"
 SAVED_FEATURE_PATH="${EXPROOT}/Features_${MESH_DIMENSIONS}/"
 SAVE_ACCURACY_PATH="${EXPROOT}/Accuracy_${MESH_DIMENSIONS}/"
@@ -48,7 +53,7 @@ GPU_ASSIGNMENT=("${GPU_LIST[0]}" "${GPU_LIST[0]}")
 
 
 for CATEGORY in "${ALL_CATEGORIES[@]}"; do
-    mesh_path="${PATH_KITTI3D}/CAD_%s/%s/"
+    mesh_path="${PATH_PASCAL3DP}/CAD_%s/%s/"
     CUDA_VISIBLE_DEVICES="${GPUS}" python "${ROOT}/code/ExtractFeatures.py" \
             --mesh_path "${mesh_path}" \
             --mesh_d "${MESH_DIMENSIONS}" \
@@ -62,7 +67,7 @@ for CATEGORY in "${ALL_CATEGORIES[@]}"; do
             --batch_size $BATCH_SIZE
 done
 
-mkdir "${SAVE_ACCURACY_PATH}"
+mkdir "${SAVE_ACCURACY_PATH}" >/dev/null 2>&1
 
 for ((i=0;i<${#ALL_CATEGORIES[@]};++i)); do
     CUDA_VISIBLE_DEVICES="${GPU_ASSIGNMENT[$i]}" python "${ROOT}/code/MeshPoseSolveAll.py" \
@@ -82,3 +87,5 @@ wait
 python "${ROOT}/code/CalAccuracy.py" \
     --load_accuracy "${SAVE_ACCURACY_PATH}" \
     --data_pendix "${OCC_LEVEL}"
+
+conda deactivate

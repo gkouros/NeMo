@@ -5,26 +5,21 @@ get_abs_filename() {
 }
 
 ROOT=$(get_abs_filename "./")
-DATAROOT="${ROOT}/data"
-EXPROOT="${ROOT}/exp/PASCAL3D"
+DATAROOT="/esat/topaz/gkouros/datasets/"
+EXPROOT="${ROOT}/exp/KITTI3D"
 
-MESH_DIMENSIONS="multi"
-GPUS="0"  #, 1, 2, 3, 4, 5, 6, 7"
-OCC_LEVEL="$1"
+MESH_DIMENSIONS="single"
+GPUS="0" #, 1, 2, 3, 4, 5, 6, 7"
+OCC_LEVEL="fully_visible"
+# OCC_LEVEL="partly_occluded"
+# OCC_LEVEL="largely_occluded"
 
-PATH_PASCAL3DP="${DATAROOT}/PASCAL3D+_release1.1/"
-TRAINED_NETWORK_PATH="${EXPROOT}/NeMo_${MESH_DIMENSIONS}/"
+PATH_KITTI3D="${DATAROOT}/KITTI3D_NeMo/"
+TRAINED_NETWORK_PATH="${EXPROOT}/../PASCAL3D/NeMo_${MESH_DIMENSIONS}/"
 SAVED_FEATURE_PATH="${EXPROOT}/Features_${MESH_DIMENSIONS}/"
 SAVE_ACCURACY_PATH="${EXPROOT}/Accuracy_${MESH_DIMENSIONS}/"
 
-PATH_CACHE_TESTING_SET="${DATAROOT}/PASCAL3D_NeMo/"
-PATH_CACHE_TESTING_SET_OCC="${DATAROOT}/PASCAL3D_OCC_NeMo/"
-
-if [ "${#OCC_LEVEL}" -eq "0" ]; then
-    PATH_CACHE_TESTING_SET_USE="${PATH_CACHE_TESTING_SET}"
-else
-    PATH_CACHE_TESTING_SET_USE="${PATH_CACHE_TESTING_SET_OCC}"
-fi
+PATH_CACHE_TESTING_SET="${DATAROOT}/KITTI3D_val_NeMo/"
 
 LOAD_FILE_NAME="saved_model_%s_799.pth"
 SAVE_FEATURE_NAME="saved_feature_%s_%s.npz"
@@ -53,14 +48,15 @@ GPU_ASSIGNMENT=("${GPU_LIST[0]}" "${GPU_LIST[0]}")
 
 
 for CATEGORY in "${ALL_CATEGORIES[@]}"; do
-    mesh_path="${PATH_PASCAL3DP}/CAD_%s/%s/"
+    mesh_path="${PATH_KITTI3D}/CAD_%s/%s/"
     CUDA_VISIBLE_DEVICES="${GPUS}" python "${ROOT}/code/ExtractFeatures.py" \
-            --mesh_path "${mesh_path}" --mesh_d "${MESH_DIMENSIONS}" \
+            --mesh_path "${mesh_path}" \
+            --mesh_d "${MESH_DIMENSIONS}" \
             --save_dir "${TRAINED_NETWORK_PATH}" \
             --type_ "${CATEGORY}" \
             --ckpt "${LOAD_FILE_NAME}" \
             --data_pendix "${OCC_LEVEL}"\
-            --root_path "${PATH_CACHE_TESTING_SET_USE}" \
+            --root_path "${PATH_CACHE_TESTING_SET}" \
             --save_features_path "${SAVED_FEATURE_PATH}" \
             --save_features_name "${SAVE_FEATURE_NAME}" \
             --batch_size $BATCH_SIZE
@@ -71,8 +67,8 @@ mkdir "${SAVE_ACCURACY_PATH}"
 for ((i=0;i<${#ALL_CATEGORIES[@]};++i)); do
     CUDA_VISIBLE_DEVICES="${GPU_ASSIGNMENT[$i]}" python "${ROOT}/code/MeshPoseSolveAll.py" \
             --type_ "${ALL_CATEGORIES[$i]}" --mesh_d "${MESH_DIMENSIONS}" \
-            --mesh_path "${PATH_PASCAL3DP}/CAD_%s/%s/" \
-            --mesh_path_ref "${PATH_PASCAL3DP}/CAD/%s/" \
+            --mesh_path "${DATAROOT}/PASCAL3D+_release1.1/CAD_%s/%s/" \
+            --mesh_path_ref "${DATAROOT}/PASCAL3D+_release1.1/CAD/%s/" \
             --feature_path "${SAVED_FEATURE_PATH}" \
             --feature_name "${SAVE_FEATURE_NAME}" \
             --data_pendix "${OCC_LEVEL}" \

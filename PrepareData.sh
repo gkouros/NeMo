@@ -1,6 +1,6 @@
 #!/bin/bash
-source /users/visics/gkouros/.bashrc
-dir=/users/visics/gkouros/projects/nemo
+conda activate nemo
+dir=/users/visics/gkouros/projects/NeMo
 cd $dir
 
 get_abs_filename() {

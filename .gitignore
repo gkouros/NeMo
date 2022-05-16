@@ -5,3 +5,4 @@ kdata
 **__pycache__
 PASCAL3D
 *.code-workspace
+logs

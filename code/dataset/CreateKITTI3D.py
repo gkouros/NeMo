@@ -5,8 +5,16 @@ import BboxTools as bbt
 import cv2
 from tqdm.auto import tqdm
 from math import radians
+import argparse
 
-split = 'val'
+global args
+
+parser = argparse.ArgumentParser(description='Generate KITTI3D dataset for NeMo')
+parser.add_argument('--split', default='train', type=str, help='')
+
+args = parser.parse_args()
+
+split = args.split
 
 data_dir = '/esat/topaz/gkouros/datasets/KITTI3D'
 annotation_path = '%s/%s/label_2/' % (data_dir, 'training')
@@ -14,7 +22,7 @@ image_path = '%s/%s/image_2/' % (data_dir, 'training')
 calib_path = '%s/%s/calib/' % (data_dir, 'training')
 splits_path = '%s/mv3d_kitti_splits' % (data_dir)
 occ_level_mapping = {0: 'fully_visible', 1: 'partly_occluded', 2: 'largely_occluded', 3: 'unknown'}
-suffix = 'jpg'
+suffix = '.JPEG'
 save_dir = {
     'train': '%s/KITTI3D_train_NeMo' % data_dir,
     'val': '%s/KITTI3D_val_NeMo' % data_dir,
@@ -69,6 +77,8 @@ def read_split_file(path):
 
 
 if __name__ == '__main__':
+    all_out_name = []
+
     for this_occ_lv in range(3):
         print('______________________________________')
         print('Start_level', this_occ_lv)
@@ -181,8 +191,11 @@ if __name__ == '__main__':
 
                 proj_foo = bbt.projection_function_by_boxes(box_ori, box_in_cropped, compose=False)
 
-                cropped_kp_list = np.array([])
-                states_list = np.array([])
+                # cropped_kp_list = np.array([])
+                # states_list = np.array([])
+                cropped_kp_list = np.zeros((12, 2))
+                states_list = np.zeros(12)
+
 
                 save_parameters = dict(name=this_name, box=box.numpy(), box_ori=box_ori.numpy(),
                                        box_obj=box_in_cropped.numpy(),
@@ -196,8 +209,8 @@ if __name__ == '__main__':
                 save_parameters['focal'] = -1
                 save_parameters['viewport'] = -1
                 save_parameters['principal'] = np.array(c2d)
-                save_parameters['width'] = width
-                save_parameters['height'] = height
+                save_parameters['width'] = img.shape[1]
+                save_parameters['height'] = img.shape[0]
                 save_parameters['bbox'] = box_np
                 save_parameters['cad_index'] = 1
 
@@ -205,11 +218,16 @@ if __name__ == '__main__':
                 Image.fromarray(img_cropped).save(os.path.join(save_img_dir, this_name + '_%d.%s' % (i, suffix)))
 
                 # print('Finished: ' + this_name + '_%d.npz' % i)
-                out_name.append(this_name + '_%d\n' % i)
+                out_name.append(this_name + '_%d' % i + suffix + '\n')
 
-        with open(os.path.join(save_list_dir, cate + '_%s.txt' % occ_level_mapping[this_occ_lv]), 'w') as file_handel:
-            file_handel.write(''.join(out_name + '.%s' % suffix))
+        with open(os.path.join(save_list_dir, cate + '_%s.txt' % occ_level_mapping[this_occ_lv]), 'w') as file_handle:
+            file_handle.write(''.join(out_name))
+
+        all_out_name.append(out_name)
 
         # for kk in range(4):
-        #     with open(os.path.join(save_list_dir, cate + '_%s_folder%d.txt' % (occ_level_mapping[this_occ_lv], kk)), 'w') as  file_handel:
-        #         file_handel.write(''.join([t for i, t in enumerate(out_name) if i % 4 == kk]))
+        #     with open(os.path.join(save_list_dir, cate + '_%s_folder%d.txt' % (occ_level_mapping[this_occ_lv], kk)), 'w') as  file_handle:
+        #         file_handle.write(''.join([t for i, t in enumerate(out_name) if i % 4 == kk]))
+    os.makedirs(os.path.join(save_dir, 'lists', cate), exist_ok=True)
+    with open(os.path.join(save_dir, 'lists', cate, cate + '.txt'), 'w') as file_handle:
+        file_handle.write(''.join(out_name))

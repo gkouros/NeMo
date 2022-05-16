@@ -201,7 +201,3 @@ for epoch in tqdm(range(args.total_epochs)):
         save_checkpoint(
         {'state': net.state_dict(), 'memory': [mem.memory for mem in bank_set], 'timestamp': int(datetime.timestamp(datetime.now())),
          'args': args}, 'saved_model_%s_%02d.pth' % (args.type_, epoch))
-
-
-
-

@@ -59,19 +59,19 @@ for fname in tqdm(fl_list):
         annos = dict(annos)
         if single_mesh:
             annos['cad_index'] = 1
-        # kps, vis = manager.get_one(annos)  # KITTI does not have keypoints
+        kps, vis = manager.get_one(annos)  # KITTI does not have keypoints
         idx = annos['cad_index'] - 1
 
         weights = cal_point_weight(direction_dicts[idx], manager.loader[idx][0], annos)
 
         annos['kp_weights'] = np.abs(weights)
-        # annos['cropped_kp_list'] = kps
-        # annos['visible'] = vis
+        annos['cropped_kp_list'] = kps
+        annos['visible'] = vis
         np.savez(os.path.join(destination_path, fname), **annos)
     except Exception as err:
         error_case.append(cate + ' ' + fname)
 
-file_name_pendix = '.jpg'
+file_name_pendix = '.JPEG'
 os.makedirs(save_list_path, exist_ok=True)
 
 annos_list = [t.split('.')[0] + file_name_pendix for t in os.listdir(destination_path)]
@@ -84,7 +84,6 @@ out_names = []
 for list_name in list_list:
     fnames = open(os.path.join(source_list_path, list_name)).readlines()
     fnames = [t.strip() for t in fnames]
-
     fnames_useful = list(set(fnames).intersection(inter_list_set))
     fnames_useful = [t + '\n' for t in fnames_useful]
     out_names += fnames_useful

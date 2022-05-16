@@ -7,8 +7,8 @@ RequestMemory = 8Gb
 
 Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 11000.0)&&(machine != "andromeda.esat.kuleuven.be")
 
-Initialdir = /users/visics/gkouros/projects/nemo
-Executable = /users/visics/gkouros/projects/nemo/TrainNeMoKITTI.sh
+Initialdir = /users/visics/gkouros/projects/NeMo
+Executable = /users/visics/gkouros/projects/NeMo/TrainNeMoKITTI.sh
 
 Log    =  logs/nemo_train_kitti.$(Cluster).log
 Output =  logs/nemo_train_kitti.$(Cluster).out

@@ -1,6 +1,7 @@
 **.zip
 exp
 data
+kdata
 **__pycache__
 PASCAL3D
 *.code-workspace

@@ -1,4 +1,8 @@
 #!/bin/bash
+
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate nemo
+
 get_abs_filename() {
   # $1 : relative filename
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
@@ -35,3 +39,4 @@ for CATEGORY in "${ALL_CATEGORIES[@]}"; do
 done
 
 
+conda deactivate

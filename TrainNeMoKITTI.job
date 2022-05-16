@@ -1,11 +1,11 @@
 Universe = vanilla
 
 RequestCpus = 8
-Request_GPUs = 1
+Request_GPUs = 4
 RequestMemory = 8Gb
 +RequestWalltime = 86400
 
-Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 11000.0)&&(machine != "andromeda.esat.kuleuven.be")
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 40000.0)&&(machine != "andromeda.esat.kuleuven.be")&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")
 
 Initialdir = /users/visics/gkouros/projects/NeMo
 Executable = /users/visics/gkouros/projects/NeMo/TrainNeMoKITTI.sh

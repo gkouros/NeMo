@@ -28,8 +28,10 @@ MESH_DIMENSIONS=("single")
 
 ####################################################################################################
 # Run dataset creator
-# echo "Create raw KITTI3D dataset!"
-# python3 code/dataset/CreateKITTI3D.py
+echo "Create raw KITTI3D dataset!"
+
+python3 code/dataset/CreateKITTI3D.py --split train
+python3 code/dataset/CreateKITTI3D.py --split val
 
 ####################################################################################################
 # Create 3D annotations
@@ -38,14 +40,13 @@ for MESH_D in "${MESH_DIMENSIONS[@]}"; do
     python3 ./code/dataset/generate_3Dkitti3D.py \
         --overwrite False \
         --root_path "${PATH_CACHE_TRAINING_SET}" \
-        --mesh_path "${PATH_PASCAL3DP}" &
+        --mesh_path "${PATH_PASCAL3DP}"
 
-    generate 3D annotations for test set
+    # generate 3D annotations for test set
     python3 ./code/dataset/generate_3Dkitti3D.py \
         --overwrite False \
         --root_path "${PATH_CACHE_TESTING_SET}" \
-        --mesh_path "${PATH_PASCAL3DP}" &
-
+        --mesh_path "${PATH_PASCAL3DP}"
 done
 
 wait

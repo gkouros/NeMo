@@ -14,7 +14,7 @@ image_path = '%s/%s/image_2/' % (data_dir, 'training')
 calib_path = '%s/%s/calib/' % (data_dir, 'training')
 splits_path = '%s/mv3d_kitti_splits' % (data_dir)
 occ_level_mapping = {0: 'fully_visible', 1: 'partly_occluded', 2: 'largely_occluded', 3: 'unknown'}
-
+suffix = 'jpg'
 save_dir = {
     'train': '%s/KITTI3D_train_NeMo' % data_dir,
     'val': '%s/KITTI3D_val_NeMo' % data_dir,
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         print('Start_level', this_occ_lv)
         save_anno_dir = os.path.join(save_dir, 'annotations', cate)
         save_img_dir = os.path.join(save_dir, 'images', cate)
-        save_list_dir = os.path.join(save_dir, 'list', cate + '_' + occ_level_mapping[this_occ_lv])
+        save_list_dir = os.path.join(save_dir, 'lists', cate + '_' + occ_level_mapping[this_occ_lv])
 
         os.makedirs(save_anno_dir, exist_ok=True)
         os.makedirs(save_img_dir, exist_ok=True)
@@ -196,18 +196,19 @@ if __name__ == '__main__':
                 save_parameters['focal'] = -1
                 save_parameters['viewport'] = -1
                 save_parameters['principal'] = np.array(c2d)
-
+                save_parameters['width'] = width
+                save_parameters['height'] = height
                 save_parameters['bbox'] = box_np
                 save_parameters['cad_index'] = 1
 
                 np.savez(os.path.join(save_anno_dir, this_name + '_%d.npz' % i), **save_parameters)
-                Image.fromarray(img_cropped).save(os.path.join(save_img_dir, this_name + '_%d.jpg' % i))
+                Image.fromarray(img_cropped).save(os.path.join(save_img_dir, this_name + '_%d.%s' % (i, suffix)))
 
                 # print('Finished: ' + this_name + '_%d.npz' % i)
                 out_name.append(this_name + '_%d\n' % i)
 
         with open(os.path.join(save_list_dir, cate + '_%s.txt' % occ_level_mapping[this_occ_lv]), 'w') as file_handel:
-            file_handel.write(''.join(out_name))
+            file_handel.write(''.join(out_name + '.%s' % suffix))
 
         # for kk in range(4):
         #     with open(os.path.join(save_list_dir, cate + '_%s_folder%d.txt' % (occ_level_mapping[this_occ_lv], kk)), 'w') as  file_handel:

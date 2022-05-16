@@ -1,8 +1,8 @@
 import torch
 import torch.utils.data
 import torchvision.transforms as transforms
-
-from dataset.Pascal3DPlus import ToTensor, Normalize, Pascal3DPlus
+from tqdm.auto import tqdm
+from dataset.KITTI3D import ToTensor, Normalize, KITTI3D
 from models.FeatureBanks import NearestMemoryManager, mask_remove_near
 from models.KeypointRepresentationNet import NetE2E
 from datetime import datetime
@@ -34,7 +34,7 @@ parser.add_argument('--adj_momentum', default=0.9, type=float, help='')
 parser.add_argument('--backbone', default='resnetext', type=str)
 parser.add_argument('--mesh_path', default='../PASCAL3D/PASCAL3D+_release1.1/CAD_%s/%s/', type=str, help='')
 parser.add_argument('--save_dir', default='../3DrepresentationData/trained_resnetext_%s/', type=str, help='')
-parser.add_argument('--root_path', default='../PASCAL3D/PASCAL3D_train_NeMo/', type=str, help='')
+parser.add_argument('--root_path', default='../KITTI3D/KITTI3D_train_NeMo/', type=str, help='')
 parser.add_argument('--mesh_d', default='single', type=str)
 parser.add_argument('--sperate_bank', default='True', type=str)
 parser.add_argument('--azum_sel', default='', type=str)
@@ -102,19 +102,20 @@ for n, subtype in zip(n_list, subtypes):
         list_path = 'lists3D_%s' % mesh_d
     anno_path = 'annotations3D_%s' % mesh_d
 
-    Pascal3D_dataset = Pascal3DPlus(transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
-                                      subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
-                                      list_path=list_path, weighted=True)
+    dataset = KITTI3D(
+        transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
+        subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
+        list_path=list_path, weighted=False, for_test=True)
 
-    n_img_all.append(len(Pascal3D_dataset))
+    n_img_all.append(len(dataset))
 
     # In case there is no image in such subtype.
-    if len(Pascal3D_dataset) == 0:
+    if len(dataset) == 0:
         bank_set.append(memory_bank)
         dataloader_set.append(None)
         continue
 
-    Pascal3D_dataloader = torch.utils.data.DataLoader(Pascal3D_dataset, batch_size=args.batch_size, shuffle=True,
+    Pascal3D_dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True,
                                                       num_workers=args.workers)
 
     bank_set.append(memory_bank)
@@ -134,7 +135,7 @@ def save_checkpoint(state, filename):
 
 print('Categroy:', args.type_, ' Number of Training Image:', sum(n_img_all))
 print('Start Training!')
-for epoch in range(args.total_epochs):
+for epoch in tqdm(range(args.total_epochs)):
     if (epoch - 1) % args.update_lr_epoch_n == 0:
         lr = args.lr * args.update_lr_
         # optim = torch.optim.SGD(net.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)

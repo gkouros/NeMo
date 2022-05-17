@@ -91,21 +91,21 @@ class KITTI3D(Dataset):
         kp = annotation_file['cropped_kp_list']
         # get visibility flag of keypoints
         iskpvisible = annotation_file['visible'] == 1 # 1-> visible, 2->occluded, 0->cropped?
+
         # weight keypoints if flag is set and there are weights in the annotation
         if self.weighted:
             iskpvisible = iskpvisible * annotation_file['kp_weights']
 
         # if not for testing but for training?
-        if len(kp) > 0:
-            if not self.for_test:
-                # if all points are visible set visible flag
-                iskpvisible = np.logical_and(iskpvisible, np.all(kp >= np.zeros_like(kp), axis=1))
-                # ensure all keypoints are within image space
-                iskpvisible = np.logical_and(iskpvisible, np.all(kp < np.array([img.size[::-1]]), axis=1))
+        if not self.for_test:
+            # if all points are visible set visible flag
+            iskpvisible = np.logical_and(iskpvisible, np.all(kp >= np.zeros_like(kp), axis=1))
+            # ensure all keypoints are within image space
+            iskpvisible = np.logical_and(iskpvisible, np.all(kp < np.array([img.size[::-1]]), axis=1))
 
-            # clip keypoints to [0,0]-[h,w]
-            kp = np.max([np.zeros_like(kp), kp], axis=0)
-            kp = np.min([np.ones_like(kp) * (np.array([img.size[::-1]]) - 1), kp], axis=0)
+        # clip keypoints to [0,0]-[h,w]
+        kp = np.max([np.zeros_like(kp), kp], axis=0)
+        kp = np.min([np.ones_like(kp) * (np.array([img.size[::-1]]) - 1), kp], axis=0)
 
         # extract image name from filename
         this_name = name_img.split('.')[0]

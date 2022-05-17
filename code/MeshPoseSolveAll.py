@@ -3,6 +3,7 @@ from lib.ProcessCameraParameters import get_anno, get_transformation_matrix
 import os
 import argparse
 from scipy.linalg import logm
+from tqdm.auto import tqdm
 
 
 parser = argparse.ArgumentParser(description='NeMo Pose Estimation')
@@ -214,7 +215,7 @@ if __name__ == '__main__':
         if len(args.save_accuracy) == 0:
             print('Start subtype: %s totally %d images.' % (subtype, len(name_list.tolist())))
 
-        for image_name in name_list:
+        for image_name in tqdm(name_list, desc=subtype):
             predicted_map = record_file[image_name]
             predicted_map = torch.from_numpy(predicted_map).to(device)
             clutter_score = torch.nn.functional.conv2d(predicted_map.unsqueeze(0), clutter_bank.unsqueeze(2).unsqueeze(3)).squeeze(0).squeeze(0)

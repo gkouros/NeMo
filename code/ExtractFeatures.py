@@ -9,6 +9,7 @@ import os
 import argparse
 import numpy as np
 from lib.get_n_list import get_n_list
+from tqdm.auto import tqdm
 
 
 ##########################################################################
@@ -144,7 +145,6 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
     else:
         list_path = 'lists3D_%s' % mesh_d
     anno_path = 'annotations3D_%s' % mesh_d
-
     Pascal3D_dataset = Pascal3DPlus(transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
                                       subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
                                       list_path=list_path, weighted=True, data_pendix=args.data_pendix)
@@ -157,7 +157,7 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
 
     with torch.no_grad():
         final_res = []
-        for j, sample in enumerate(Pascal3D_dataloader):
+        for j, sample in tqdm(enumerate(Pascal3D_dataloader), desc=subtype, total=len(Pascal3D_dataloader)):
             img, keypoint, iskpvisible, this_name, box_obj = sample['img'], sample['kp'], sample['iskpvisible'], sample['this_name'], sample['box_obj']
             img = img.cuda()
 

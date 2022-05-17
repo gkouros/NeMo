@@ -34,7 +34,7 @@ python3 code/dataset/CreateKITTI3D.py --split train
 python3 code/dataset/CreateKITTI3D.py --split val
 
 ####################################################################################################
-# Create 3D annotations
+# # Create 3D annotations
 for MESH_D in "${MESH_DIMENSIONS[@]}"; do
     # generate 3D annotations for training set
     python3 ./code/dataset/generate_3Dkitti3D.py \

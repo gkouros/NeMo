@@ -15,8 +15,9 @@ EXPROOT="${ROOT}/exp/KITTI3D"
 MESH_DIMENSIONS="single"
 GPUS="0" #, 1, 2, 3, 4, 5, 6, 7"
 # OCC_LEVEL="fully_visible"
-OCC_LEVEL="partly_occluded"
-OCC_LEVEL="largely_occluded"
+# OCC_LEVEL="partly_occluded"
+# OCC_LEVEL="largely_occluded"
+OCC_LEVEL=""
 
 PATH_KITTI3D="${DATAROOT}/KITTI3D"
 PATH_PASCAL3DP="${DATAROOT}/pascal3d/PASCAL3D+_release1.1/"
@@ -72,15 +73,15 @@ mkdir "${SAVE_ACCURACY_PATH}" >/dev/null 2>&1
 for ((i=0;i<${#ALL_CATEGORIES[@]};++i)); do
     CUDA_VISIBLE_DEVICES="${GPU_ASSIGNMENT[$i]}" python "${ROOT}/code/MeshPoseSolveAll.py" \
             --type_ "${ALL_CATEGORIES[$i]}" --mesh_d "${MESH_DIMENSIONS}" \
-            --mesh_path "${DATAROOT}/PASCAL3D+_release1.1/CAD_%s/%s/" \
-            --mesh_path_ref "${DATAROOT}/PASCAL3D+_release1.1/CAD/%s/" \
+            --mesh_path "${PATH_PASCAL3DP}/CAD_%s/%s/" \
+            --mesh_path_ref "${PATH_PASCAL3DP}/CAD/%s/" \
             --feature_path "${SAVED_FEATURE_PATH}" \
             --feature_name "${SAVE_FEATURE_NAME}" \
             --data_pendix "${OCC_LEVEL}" \
             --save_accuracy "${SAVE_ACCURACY_PATH}/${ALL_CATEGORIES[$i]}${OCC_LEVEL}" \
             --anno_path "${PATH_CACHE_TESTING_SET}/annotations/%s/" \
             --total_epochs $TOTAL_EPOCHS \
-            --lr $LEARNING_RATE &
+            --lr $LEARNING_RATE
 done
 
 wait

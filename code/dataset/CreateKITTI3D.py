@@ -215,7 +215,7 @@ if __name__ == '__main__':
                 save_parameters['cad_index'] = 1
 
                 np.savez(os.path.join(save_anno_dir, this_name + '_%d.npz' % i), **save_parameters)
-                Image.fromarray(img_cropped).save(os.path.join(save_img_dir, this_name + '_%d.%s' % (i, suffix)))
+                Image.fromarray(img_cropped).save(os.path.join(save_img_dir, this_name + '_%d' % i + suffix))
 
                 # print('Finished: ' + this_name + '_%d.npz' % i)
                 out_name.append(this_name + '_%d' % i + suffix + '\n')

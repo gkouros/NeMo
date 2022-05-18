@@ -1,0 +1,19 @@
+Universe = vanilla
+
+RequestCpus = 8
+Request_GPUs = 1
+RequestMemory = 16Gb
++RequestWalltime = 86400
+
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 11000.0)&&(machine != "andromeda.esat.kuleuven.be")&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")&&(machine != "vladimir.esat.kuleuven.be")
+
+Initialdir = /users/visics/gkouros/projects/NeMo
+Executable = /users/visics/gkouros/projects/NeMo/InferenceNeMoKITTI.sh
+
+Log    =  logs/nemo_inference_kitti.$(Cluster).log
+Output =  logs/nemo_inference_kitti.$(Cluster).out
+Error  =  logs/nemo_inference_kitti.$(Cluster).err
+
+Notification = Complete
+Queue 1
+

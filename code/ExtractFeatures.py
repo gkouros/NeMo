@@ -2,6 +2,7 @@ import torch
 import torch.utils.data
 import torchvision.transforms as transforms
 import torch.nn.functional as F
+from dataset.KITTI3D import ToTensor, Normalize, KITTI3D
 from dataset.Pascal3DPlus import ToTensor, Normalize, Pascal3DPlus
 from models.FeatureBanks import NearestMemoryManager
 from models.KeypointRepresentationNet import NetE2E, net_stride
@@ -145,19 +146,20 @@ for i, (n, subtype) in enumerate(zip(n_list, subtypes)):
     else:
         list_path = 'lists3D_%s' % mesh_d
     anno_path = 'annotations3D_%s' % mesh_d
-    Pascal3D_dataset = Pascal3DPlus(transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
-                                      subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
-                                      list_path=list_path, weighted=True, data_pendix=args.data_pendix)
-    Pascal3D_dataloader = torch.utils.data.DataLoader(Pascal3D_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
+    Dataset = Pascal3DPlus if 'pascal' in args.root_path.lower() else KITTI3D
+    dataset = Dataset(transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
+                      subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
+                      list_path=list_path, weighted=True, data_pendix=args.data_pendix)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
 
     all_visible = torch.zeros((n, ), dtype=torch.long)
     all_correct = torch.zeros((n, ), dtype=torch.long)
 
-    print('number images:', len(Pascal3D_dataset))
+    print('number images:', len(dataset))
 
     with torch.no_grad():
         final_res = []
-        for j, sample in tqdm(enumerate(Pascal3D_dataloader), desc=subtype, total=len(Pascal3D_dataloader)):
+        for j, sample in tqdm(enumerate(dataloader), desc=subtype, total=len(dataloader)):
             img, keypoint, iskpvisible, this_name, box_obj = sample['img'], sample['kp'], sample['iskpvisible'], sample['this_name'], sample['box_obj']
             img = img.cuda()
 

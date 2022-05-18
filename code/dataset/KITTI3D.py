@@ -36,8 +36,8 @@ class KITTI3D(Dataset):
         else:
             list_path = 'lists'
 
-        self.image_path = os.path.join(self.root_path, img_path, '%s/' % (self.img_class + data_pendix))
-        self.annotation_path = os.path.join(self.root_path, anno_path, '%s/' % (self.img_class + data_pendix))
+        self.image_path = os.path.join(self.root_path, img_path, '%s/' % (self.img_class))
+        self.annotation_path = os.path.join(self.root_path, anno_path, '%s/' % (self.img_class))
         list_path = os.path.join(self.root_path, list_path, '%s/' % (self.img_class + data_pendix))
 
         self.transforms = transforms

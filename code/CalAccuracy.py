@@ -5,11 +5,16 @@ import argparse
 parser = argparse.ArgumentParser(description='NeMo Calculate Accuracy')
 parser.add_argument('--load_accuracy', default='', type=str, help='')
 parser.add_argument('--data_pendix', default='', type=str, help='')
+parser.add_argument('--category', default='all', type=str, help='')
 
 args = parser.parse_args()
 
 cates = ['aeroplane', 'bicycle', 'boat', 'bottle', 'bus', 'car', 'chair', 'diningtable', 'motorbike', 'sofa', 'train', 'tvmonitor']
 cates1 = ['plane', 'bike', 'boat', 'bottle', 'bus', 'car', 'chair', 'table', 'mbike', 'sofa', 'train', 'tv']
+
+if args.category != 'all':
+    cates1 = [cates1[cates.index(args.category)]]
+    cates = [args.category]
 
 out_ = np.zeros((4, len(cates)), dtype=np.float32)
 

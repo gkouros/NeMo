@@ -1,0 +1,19 @@
+Universe = vanilla
+
+RequestCpus = 8
+Request_GPUs = 2
+RequestMemory = 8Gb
++RequestWalltime = 14000
+
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 11000.0)&&(machine != "stadius-nc-5.esat.kuleuven.be")&&(machine != "stadius-nc-4.esat.kuleuven.be")
+
+Initialdir = /users/visics/gkouros/projects/NeMo/
+Executable = /users/visics/gkouros/projects/NeMo/TrainNeMoKITTI.sh
+Arguments = renault $(Cluster)
+
+Log    =  logs/interactive.$(Cluster).log
+Output =  logs/interactive.$(Cluster).out
+Error  =  logs/interactive.$(Cluster).err
+
+Notification = Complete
+Queue 1

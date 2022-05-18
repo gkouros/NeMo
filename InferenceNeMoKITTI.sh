@@ -14,10 +14,11 @@ EXPROOT="${ROOT}/exp/KITTI3D"
 
 MESH_DIMENSIONS="single"
 GPUS="0" #, 1, 2, 3, 4, 5, 6, 7"
-# OCC_LEVEL="fully_visible"
+GPUS="${CUDA_VISIBLE_DEVICES}"
+OCC_LEVEL="fully_visible"
 # OCC_LEVEL="partly_occluded"
 # OCC_LEVEL="largely_occluded"
-OCC_LEVEL=""
+# OCC_LEVEL=""
 
 PATH_KITTI3D="${DATAROOT}/KITTI3D"
 PATH_PASCAL3DP="${DATAROOT}/pascal3d/PASCAL3D+_release1.1/"
@@ -31,7 +32,7 @@ LOAD_FILE_NAME="saved_model_%s_799.pth"
 SAVE_FEATURE_NAME="saved_feature_%s_%s.npz"
 
 # Feature extraction
-BATCH_SIZE=1
+BATCH_SIZE=8
 
 # Pose optimization
 LEARNING_RATE=0.05
@@ -40,6 +41,7 @@ TOTAL_EPOCHS=300
 IFS=', ' read -r -a GPU_LIST <<< "${GPUS}"
 # ALL_CATEGORIES=("aeroplane"  "bicycle"  "boat"  "bottle"  "bus"  "car"  "chair"  "diningtable"  "motorbike"  "sofa"  "train"  "tvmonitor")
 ALL_CATEGORIES=("car")
+# ALL_CATEGORIES=("car_fully_visible", "car_partly_occlude", "car_largely_occluded")
 
 # if [ "${#GPU_LIST[@]}" -eq "8" ]; then
 #     # 8 GPU SETTING
@@ -54,9 +56,8 @@ GPU_ASSIGNMENT=("${GPU_LIST[0]}" "${GPU_LIST[0]}")
 
 
 for CATEGORY in "${ALL_CATEGORIES[@]}"; do
-    mesh_path="${PATH_PASCAL3DP}/CAD_%s/%s/"
     CUDA_VISIBLE_DEVICES="${GPUS}" python "${ROOT}/code/ExtractFeatures.py" \
-            --mesh_path "${mesh_path}" \
+            --mesh_path "${PATH_PASCAL3DP}/CAD_%s/%s/" \
             --mesh_d "${MESH_DIMENSIONS}" \
             --save_dir "${TRAINED_NETWORK_PATH}" \
             --type_ "${CATEGORY}" \
@@ -87,6 +88,7 @@ done
 wait
 python "${ROOT}/code/CalAccuracy.py" \
     --load_accuracy "${SAVE_ACCURACY_PATH}" \
-    --data_pendix "${OCC_LEVEL}"
+    --data_pendix "${OCC_LEVEL}" \
+    --category "${ALL_CATEGORIES}"
 
 conda deactivate

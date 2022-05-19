@@ -1,11 +1,13 @@
 Universe = vanilla
 
-RequestCpus = 8
+RequestCpus = 4
 Request_GPUs = 1
-RequestMemory = 16Gb
+RequestMemory = 6Gb
 +RequestWalltime = 86400
 
-Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 11000.0)&&(machine != "andromeda.esat.kuleuven.be")&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")&&(machine != "vladimir.esat.kuleuven.be")
+NiceUser = false
+
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 4000.0)&&(machine != "andromeda.esat.kuleuven.be")&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")&&(machine != "vladimir.esat.kuleuven.be")
 
 Initialdir = /users/visics/gkouros/projects/NeMo
 Executable = /users/visics/gkouros/projects/NeMo/InferenceNeMoKITTI.sh

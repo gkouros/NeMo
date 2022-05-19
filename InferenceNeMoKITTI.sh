@@ -13,12 +13,13 @@ DATAROOT="/esat/topaz/gkouros/datasets/"
 EXPROOT="${ROOT}/exp/KITTI3D"
 
 MESH_DIMENSIONS="single"
-GPUS="0" #, 1, 2, 3, 4, 5, 6, 7"
+# GPUS="0" #, 1, 2, 3, 4, 5, 6, 7"
 GPUS="${CUDA_VISIBLE_DEVICES}"
-OCC_LEVEL="_fully_visible"
+echo GPUS:${GPUS}
+# OCC_LEVEL="_fully_visible"
 # OCC_LEVEL="_partly_occluded"
 # OCC_LEVEL="_largely_occluded"
-# OCC_LEVEL=""
+OCC_LEVEL=""
 
 PATH_KITTI3D="${DATAROOT}/KITTI3D"
 PATH_PASCAL3DP="${DATAROOT}/pascal3d/PASCAL3D+_release1.1/"

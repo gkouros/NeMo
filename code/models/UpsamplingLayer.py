@@ -17,8 +17,8 @@ class DoubleConv(nn.Module):
             nn.Conv2d(mid_channels, out_channels, kernel_size = 3, padding = 1),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace = True)
-        ) 
-            
+        )
+
     def forward(self, X):
         X = self.doubleconv(X)
         return X
@@ -29,17 +29,16 @@ class Up(nn.Module):
         super(Up, self).__init__()
         self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
         self.doubleconv = DoubleConv(in_channels, out_channels, mid_channels)
-        
+
     def forward(self, X1, X2):
         X1 = self.up(X1)
         diffY = torch.tensor([X2.size()[2] - X1.size()[2]])
         diffX = torch.tensor([X2.size()[3] - X1.size()[3]])
         # just incase:
-        X1 = F.pad(X1, [diffX // 2, diffX - diffX // 2,
-                        diffY // 2, diffY - diffY // 2])
+        X1 = F.pad(X1, [torch.div(diffX, 2, rounding_mode='floor'), diffX - torch.div(diffX, 2, rounding_mode='floor'),
+                        torch.div(diffX, 2, rounding_mode='floor'), diffY - torch.div(diffX, 2, rounding_mode='floor')])
         X = torch.cat([X2, X1], dim=1)
         X = self.doubleconv(X)
         return X
 
 
-        

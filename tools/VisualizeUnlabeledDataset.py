@@ -86,9 +86,8 @@ for k in list(annos.keys())[0::10]:
     img = trans(img_)
 
     print(annos[k])
-    distance_pred, theta_pred, elevation_pred, azimuth_pred, t0, t1 = \
-        3.46957731,  0.32689595,  0.00502517,  1.5008601 , -0.06280591, 0.02838039
-        # annos[k]
+    distance_pred, theta_pred, elevation_pred, azimuth_pred, t0, t1 = annos[k]
+
 
     # print(distance_pred)
     # Image.fromarray(img).show()
@@ -96,7 +95,6 @@ for k in list(annos.keys())[0::10]:
     R, T = campos_to_R_T(C, torch.Tensor([theta_pred]), device=device, extra_trans=torch.Tensor([[t0, t1, 0]]).to(device))
     image = phong_renderer(meshes_world=meshes.clone(), R=R, T=T)
     image = image[0, ..., :3].detach().squeeze().cpu().numpy()
-    print(image.min())
 
     image = np.array((image / image.max()) * 255).astype(np.uint8)
 
@@ -106,5 +104,3 @@ for k in list(annos.keys())[0::10]:
 
     mixed_image = (image * 0.6 + img * 0.4).astype(np.uint8)
     Image.fromarray(mixed_image).save('../Visuals1/%s.jpg' % k)
-
-    break

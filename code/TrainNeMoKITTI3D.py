@@ -132,10 +132,31 @@ def save_checkpoint(state, filename):
     file = os.path.join(args.save_dir, filename)
     torch.save(state, file)
 
+checkpoints = [fn for fn in os.listdir(args.save_dir) if args.type_ in fn]
+if len(checkpoints) != 0:
+    latest_checkpoint_fn = checkpoints[0]
+    latest_epoch = re.findall(r'\d+', latest_checkpoint)
+    import re
+    for fn in checkpoints:
+        epoch = re.findall(r'\d+', 'fn')
+        if epoch > latest_epoch:
+            latest_epoch = epoch
+            latest_checkpoint_fn = fn
+
+    checkpoint = torch.load(os.path.join(args.save_dir, latest_checkpoint_fn))
+    net.load_state_dict(checkpoint['state'])
+    args = checkpoint['args']
+    for mem, mem_ckpt in zip(bank_set, checkpoint['memory']):
+        mem.memory = mem_ckpt
+
+else:
+    latest_epoch = 0
+    latest_checkpoint_fn = ''
+
 
 print('Categroy:', args.type_, ' Number of Training Image:', sum(n_img_all))
 print('Start Training!')
-for epoch in tqdm(range(args.total_epochs)):
+for epoch in tqdm(range(args.total_epochs), initial=latest_epoch):
     if (epoch - 1) % args.update_lr_epoch_n == 0:
         lr = args.lr * args.update_lr_
         # optim = torch.optim.SGD(net.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
@@ -199,5 +220,6 @@ for epoch in tqdm(range(args.total_epochs)):
 
     if epoch % 200 == 199:
         save_checkpoint(
-        {'state': net.state_dict(), 'memory': [mem.memory for mem in bank_set], 'timestamp': int(datetime.timestamp(datetime.now())),
+        {'state': net.state_dict(), 'memory': [mem.memory for mem in bank_set],
+         'timestamp': int(datetime.timestamp(datetime.now())),
          'args': args}, 'saved_model_%s_%02d.pth' % (args.type_, epoch))

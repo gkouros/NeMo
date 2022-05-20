@@ -149,10 +149,11 @@ if len(checkpoints) != 0:
     for mem, mem_ckpt in zip(bank_set, checkpoint['memory']):
         mem.memory = mem_ckpt
 
+    print('Starting from checkpoint %s' % fn)
 else:
     latest_epoch = 0
     latest_checkpoint_fn = ''
-
+    print('No checkpoint found. Starting from scratch.')
 
 print('Categroy:', args.type_, ' Number of Training Image:', sum(n_img_all))
 print('Start Training!')

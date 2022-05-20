@@ -9,6 +9,8 @@ from datetime import datetime
 import os
 import argparse
 from lib.get_n_list import get_n_list
+import re
+
 
 global args
 parser = argparse.ArgumentParser(description='CoKe Training for NeMo')
@@ -136,7 +138,6 @@ checkpoints = [fn for fn in os.listdir(args.save_dir) if args.type_ in fn]
 if len(checkpoints) != 0:
     latest_checkpoint_fn = checkpoints[0]
     latest_epoch = re.findall(r'\d+', latest_checkpoint)
-    import re
     for fn in checkpoints:
         epoch = re.findall(r'\d+', 'fn')
         if epoch > latest_epoch:

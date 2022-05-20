@@ -160,7 +160,7 @@ print(latest_epoch)
 
 print('Categroy:', args.type_, ' Number of Training Image:', sum(n_img_all))
 print('Start Training!')
-for epoch in tqdm(range(latest_epoch+1, args.total_epochs), initial=latest_epoch+1):
+for epoch in tqdm(range(latest_epoch+1, args.total_epochs+latest_epoch+1), initial=latest_epoch+1):
     if (epoch - 1) % args.update_lr_epoch_n == 0:
         lr = args.lr * args.update_lr_
         # optim = torch.optim.SGD(net.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)

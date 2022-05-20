@@ -137,7 +137,7 @@ def save_checkpoint(state, filename):
 checkpoints = [fn for fn in os.listdir(args.save_dir) if args.type_ in fn]
 if len(checkpoints) != 0:
     latest_checkpoint_fn = checkpoints[0]
-    latest_epoch = re.findall(r'\d+', latest_checkpoint)
+    latest_epoch = re.findall(r'\d+', latest_checkpoint_fn)
     for fn in checkpoints:
         epoch = re.findall(r'\d+', 'fn')
         if epoch > latest_epoch:

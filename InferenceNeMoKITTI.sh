@@ -70,11 +70,12 @@ for CATEGORY in "${ALL_CATEGORIES[@]}"; do
             --batch_size $BATCH_SIZE
 done
 
-mkdir "${SAVE_ACCURACY_PATH}" >/dev/null 2>&1
+mkdir "${SAVE_ACCURACY_PATH}" > /dev/null 2>&1
 
 for ((i=0;i<${#ALL_CATEGORIES[@]};++i)); do
     CUDA_VISIBLE_DEVICES="${GPU_ASSIGNMENT[$i]}" python "${ROOT}/code/MeshPoseSolveAll.py" \
-            --type_ "${ALL_CATEGORIES[$i]}" --mesh_d "${MESH_DIMENSIONS}" \
+            --type_ "${ALL_CATEGORIES[$i]}" \
+            --mesh_d "${MESH_DIMENSIONS}" \
             --mesh_path "${PATH_PASCAL3DP}/CAD_%s/%s/" \
             --mesh_path_ref "${PATH_PASCAL3DP}/CAD/%s/" \
             --feature_path "${SAVED_FEATURE_PATH}" \
@@ -87,6 +88,7 @@ for ((i=0;i<${#ALL_CATEGORIES[@]};++i)); do
 done
 
 wait
+
 python "${ROOT}/code/CalAccuracy.py" \
     --load_accuracy "${SAVE_ACCURACY_PATH}" \
     --data_pendix "${OCC_LEVEL}" \

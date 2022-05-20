@@ -137,9 +137,9 @@ def save_checkpoint(state, filename):
 checkpoints = [fn for fn in os.listdir(args.save_dir) if args.type_ in fn]
 if len(checkpoints) != 0:
     latest_checkpoint_fn = checkpoints[0]
-    latest_epoch = re.findall(r'\d+', latest_checkpoint_fn)
-    for fn in checkpoints:
-        epoch = re.findall(r'\d+', 'fn')
+    latest_epoch = int(re.findall(r'\d+', latest_checkpoint_fn)[0])
+    for fn in checkpoints[1:]:
+        epoch = int(re.findall(r'\d+', 'fn')[0])
         if epoch > latest_epoch:
             latest_epoch = epoch
             latest_checkpoint_fn = fn
@@ -150,11 +150,13 @@ if len(checkpoints) != 0:
     for mem, mem_ckpt in zip(bank_set, checkpoint['memory']):
         mem.memory = mem_ckpt
 
-    print('Starting from checkpoint %s' % fn)
+    print('Starting from checkpoint %s' % latest_checkpoint_fn)
 else:
     latest_epoch = 0
     latest_checkpoint_fn = ''
     print('No checkpoint found. Starting from scratch.')
+
+print(latest_epoch)
 
 print('Categroy:', args.type_, ' Number of Training Image:', sum(n_img_all))
 print('Start Training!')

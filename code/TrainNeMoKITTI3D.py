@@ -139,7 +139,7 @@ if len(checkpoints) != 0:
     latest_checkpoint_fn = checkpoints[0]
     latest_epoch = int(re.findall(r'\d+', latest_checkpoint_fn)[0])
     for fn in checkpoints[1:]:
-        epoch = int(re.findall(r'\d+', 'fn')[0])
+        epoch = int(re.findall(r'\d+', fn)[0])
         if epoch > latest_epoch:
             latest_epoch = epoch
             latest_checkpoint_fn = fn

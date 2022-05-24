@@ -30,6 +30,7 @@ parser.add_argument('--momentum', default=0.9, type=float, help='')
 parser.add_argument('--train_accumulate', default=10, type=int, help='')
 parser.add_argument('--weight_decay', default=1e-4, type=float, help='')
 parser.add_argument('--type_', default='car', type=str, help='')
+parser.add_argument('--data_pendix', default='', type=str, help='')
 parser.add_argument('--num_noise', default=5, type=int, help='')
 parser.add_argument('--max_group', default=512, type=int, help='')
 parser.add_argument('--adj_momentum', default=0.9, type=float, help='')
@@ -107,7 +108,8 @@ for n, subtype in zip(n_list, subtypes):
     dataset = KITTI3D(
         transforms=transforms, rootpath=args.root_path, imgclass=args.type_,
         subtypes=[subtype], mesh_path=args.mesh_path, anno_path=anno_path,
-        list_path=list_path, weighted=False, for_test=True)
+        list_path=list_path, weighted=False, for_test=True,
+        data_pendix=args.data_pendix)
 
     n_img_all.append(len(dataset))
 

@@ -30,8 +30,8 @@ NUM_CLUTTER_GROUP=512
 CUDA_VISIBLE_DEVICES="${GPUS}" python "${ROOT}/code/TrainNeMoKITTI3D.py" \
         --mesh_path "${MESH_PATH}" --save_dir "${SAVED_NETWORK_PATH}" \
         --type_ "car" --root_path "${PATH_CACHE_TRAINING_SET}" --mesh_d "${MESH_DIMENSIONS}" \
-        --sperate_bank "False" --batch_size $BATCH_SIZE --total_epochs $TOTAL_EPOCHS \
+        --sperate_bank "True" --batch_size $BATCH_SIZE --total_epochs $TOTAL_EPOCHS \
         --lr $LEARNING_RATE --weight_noise $WEIGHT_CLUTTER --num_noise $NUM_CLUTTER_IMAGE \
-        --max_group $NUM_CLUTTER_GROUP
+        --max_group $NUM_CLUTTER_GROUP --data_pendix "_fully_visible"
 
 conda deactivate

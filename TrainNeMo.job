@@ -10,11 +10,11 @@ Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 15000.0)&&(machin
 NiceUser = false
 
 Initialdir = /users/visics/gkouros/projects/NeMo
-Executable = /users/visics/gkouros/projects/NeMo/TrainNeMoKITTI.sh
+Executable = /users/visics/gkouros/projects/NeMo/TrainNeMo.sh
 
-Log    =  logs/nemo_train_kitti.$(Cluster).log
-Output =  logs/nemo_train_kitti.$(Cluster).out
-Error  =  logs/nemo_train_kitti.$(Cluster).err
+Log    =  logs/nemo_train_pascal3d.$(Cluster).log
+Output =  logs/nemo_train_pascal3d.$(Cluster).out
+Error  =  logs/nemo_train_pascal3d.$(Cluster).err
 
 Notification = Complete
 Queue 1

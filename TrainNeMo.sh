@@ -13,15 +13,18 @@ DATAROOT="${ROOT}/data"
 EXPROOT="${ROOT}/exp"
 
 MESH_DIMENSIONS="single"
-GPUS="0, 1, 2, 3, 4, 5, 6"
+# GPUS="0, 1, 2, 3, 4, 5, 6"
+GPUS="${CUDA_VISIBLE_DEVICES}"
+echo GPUS:${GPUS}
 
 PATH_PASCAL3DP="${DATAROOT}/PASCAL3D+_release1.1/"
 PATH_CACHE_TRAINING_SET="${DATAROOT}/PASCAL3D_train_NeMo/"
 SAVED_NETWORK_PATH="${EXPROOT}/NeMo_${MESH_DIMENSIONS}/"
 
-ALL_CATEGORIES=("aeroplane"  "bicycle"  "boat"  "bottle"  "bus"  "car"  "chair"  "diningtable"  "motorbike"  "sofa"  "train"  "tvmonitor")
+# ALL_CATEGORIES=("aeroplane"  "bicycle"  "boat"  "bottle"  "bus"  "car"  "chair"  "diningtable"  "motorbike"  "sofa"  "train"  "tvmonitor")
+ALL_CATEGORIES=("car")
 
-BATCH_SIZE=108
+BATCH_SIZE=32
 TOTAL_EPOCHS=800
 LEARNING_RATE=0.0001
 WEIGHT_CLUTTER=5e-3

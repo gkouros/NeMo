@@ -1,4 +1,8 @@
 #!/bin/bash
+
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate nemo
+
 get_abs_filename() {
   # $1 : relative filename
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
@@ -8,8 +12,9 @@ ROOT=$(get_abs_filename "./")
 DATAROOT="${ROOT}/data"
 EXPROOT="${ROOT}/exp/PASCAL3D"
 
-MESH_DIMENSIONS="multi"
-GPUS="0"  #, 1, 2, 3, 4, 5, 6, 7"
+MESH_DIMENSIONS="single"
+# GPUS="0"  #, 1, 2, 3, 4, 5, 6, 7"
+GPUS="${CUDA_VISIBLE_DEVICES}"
 OCC_LEVEL="$1"
 
 PATH_PASCAL3DP="${DATAROOT}/PASCAL3D+_release1.1/"
@@ -85,4 +90,5 @@ done
 wait
 python "${ROOT}/code/CalAccuracy.py" \
     --load_accuracy "${SAVE_ACCURACY_PATH}" \
-    --data_pendix "${OCC_LEVEL}"
+    --data_pendix "${OCC_LEVEL}" \
+    --category "${ALL_CATEGORIES}"

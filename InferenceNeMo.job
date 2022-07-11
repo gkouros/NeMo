@@ -1,0 +1,21 @@
+Universe = vanilla
+
+RequestCpus = 4
+Request_GPUs = 1
+RequestMemory = 6Gb
++RequestWalltime = 86400
+
+NiceUser = false
+
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 4000.0)&&(machine != "andromeda.esat.kuleuven.be")&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")&&(machine != "vladimir.esat.kuleuven.be")
+
+Initialdir = /users/visics/gkouros/projects/NeMo
+Executable = /users/visics/gkouros/projects/NeMo/InferenceNeMo.sh
+
+Log    =  logs/nemo_inference_pascal3d.$(Cluster).log
+Output =  logs/nemo_inference_pascal3d.$(Cluster).out
+Error  =  logs/nemo_inference_pascal3d.$(Cluster).err
+
+Notification = Complete
+Queue 1
+

@@ -68,7 +68,7 @@ os.makedirs(args.save_dir, exist_ok=True)
 net = NetE2E(net_type=args.backbone, local_size=args.local_size,
              output_dimension=args.d_feature, reduce_function=None, n_noise_points=args.num_noise, pretrain=True, noise_on_mask=False)
 net.train()
-if sperate_bank:
+if sperate_bank and n_gpus > 1:
     net = torch.nn.DataParallel(net, device_ids=[i for i in range(n_gpus - 1)]).cuda()
 else:
     net = torch.nn.DataParallel(net).cuda()

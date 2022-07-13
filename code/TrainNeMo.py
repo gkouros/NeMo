@@ -11,7 +11,7 @@ import argparse
 from lib.get_n_list import get_n_list
 
 import sys
-sys.path.append('/home/gkouros/projects/thesis/src')
+sys.path.append(os.path.expanduser('~/projects/thesis/src'))
 from dataloader.transforms import SyntheticOcclusion
 
 

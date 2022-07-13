@@ -12,7 +12,7 @@ ROOT=$(get_abs_filename "./")
 DATAROOT="${ROOT}/data"
 EXPROOT="${ROOT}/exp"
 
-MESH_DIMENSIONS="single"
+MESH_DIMENSIONS="multi"
 # GPUS="0, 1, 2, 3, 4, 5, 6"
 GPUS="${CUDA_VISIBLE_DEVICES}"
 echo GPUS:${GPUS}

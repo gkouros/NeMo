@@ -11,12 +11,13 @@ global args
 
 parser = argparse.ArgumentParser(description='Generate KITTI3D dataset for NeMo')
 parser.add_argument('--split', default='train', type=str, help='')
+parser.add_argument('--datadir', type=str, help='')
 
 args = parser.parse_args()
 
 split = args.split
 
-data_dir = '/esat/topaz/gkouros/datasets/KITTI3D'
+data_dir = args.datadir #'/esat/topaz/gkouros/datasets/KITTI3D'
 annotation_path = '%s/%s/label_2/' % (data_dir, 'training')
 image_path = '%s/%s/image_2/' % (data_dir, 'training')
 calib_path = '%s/%s/calib/' % (data_dir, 'training')
@@ -31,7 +32,7 @@ save_dir = {
 
 cate = 'car'
 cate_map = {'car': 'Car'}
-min_box_size = 40
+min_box_size = 100
 camera_matrix_num = 2
 out_shape = (256, 672)
 elevation_default = 0

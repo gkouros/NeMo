@@ -182,3 +182,13 @@ class ColorJitter(object):
         sample['img'] = self.trans(sample['img'])
 
         return sample
+
+
+class GaussianBlur(object):
+    def __init__(self):
+        self.trans = transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.01, 1))
+
+    def __call__(self, sample):
+        sample['img'] = self.trans(sample['img'])
+
+        return sample

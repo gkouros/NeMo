@@ -2,13 +2,18 @@ import torch
 import torch.utils.data
 import torchvision.transforms as transforms
 
-from dataset.Pascal3DPlus import ToTensor, Normalize, Pascal3DPlus
+from dataset.Pascal3DPlus import ToTensor, Normalize, Pascal3DPlus, ColorJitter, GaussianBlur
 from models.FeatureBanks import NearestMemoryManager, mask_remove_near
 from models.KeypointRepresentationNet import NetE2E
 from datetime import datetime
 import os
 import argparse
 from lib.get_n_list import get_n_list
+
+import sys
+sys.path.append('/home/gkouros/projects/thesis/src')
+from dataloader.transforms import SyntheticOcclusion
+
 
 global args
 parser = argparse.ArgumentParser(description='CoKe Training for NeMo')
@@ -71,7 +76,14 @@ else:
 bank_set = []
 dataloader_set = []
 
+occluders_path = os.path.join(args.root_path, '../VOCdevkit/VOC2012/')
+occ_path = os.path.join(
+    occluders_path, 'occluders_without_%s.npz' % args.type_)
+
 transforms = transforms.Compose([
+    SyntheticOcclusion(occ_path, 0.5),
+    ColorJitter(),
+    GaussianBlur(),
     ToTensor(),
     Normalize(),
 ])
@@ -180,7 +192,7 @@ for epoch in range(args.total_epochs):
                 y_idx.view(-1)[iskpvisible.view(-1)])
 
             loss = torch.mean(loss)
-            
+
             loss_main = loss.item()
             if args.num_noise > 0 and True:
                 loss_reg = torch.mean(noise_sim) * 0.1

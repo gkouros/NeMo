@@ -19,7 +19,7 @@ echo GPUS:${GPUS}
 
 PATH_PASCAL3DP="${DATAROOT}/PASCAL3D+_release1.1/"
 PATH_CACHE_TRAINING_SET="${DATAROOT}/PASCAL3D_train_NeMo/"
-SAVED_NETWORK_PATH="${EXPROOT}/NeMo_${MESH_DIMENSIONS}/"
+SAVED_NETWORK_PATH="${EXPROOT}/PASCAL3D/NeMo_${MESH_DIMENSIONS}/"
 
 # ALL_CATEGORIES=("aeroplane"  "bicycle"  "boat"  "bottle"  "bus"  "car"  "chair"  "diningtable"  "motorbike"  "sofa"  "train"  "tvmonitor")
 ALL_CATEGORIES=("car")

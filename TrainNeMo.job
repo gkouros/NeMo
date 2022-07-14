@@ -1,11 +1,11 @@
 Universe = vanilla
 
-RequestCpus = 8
+RequestCpus = 4
 Request_GPUs = 2
 RequestMemory = 16Gb
 +RequestWalltime = 259000
 
-Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 15000.0)&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")&&(machine != "bandai.esat.kuleuven.be")
+Requirements = (CUDACapability >= 3.5)&&(CUDAGlobalMemoryMb >= 15000.0)&&(machine != "stadius-nc-4.esat.kuleuven.be")&&(machine != "stadius-nc-5.esat.kuleuven.be")
 
 NiceUser = false
 

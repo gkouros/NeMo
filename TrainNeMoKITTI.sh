@@ -13,8 +13,13 @@ DATAROOT="${ROOT}/kdata"
 EXPROOT="${ROOT}/exp/KITTI3D"
 
 MESH_DIMENSIONS="single"
+<<<<<<< Updated upstream
 GPUS="${CUDA_VISIBLE_DEVICES}"
 echo GPUS:${GPUS}
+=======
+GPUS="5, 6"
+# GPUS="0, 1, 2, 3" #, 4, 5, 6"
+>>>>>>> Stashed changes
 
 PATH_CACHE_TRAINING_SET="${DATAROOT}/KITTI3D_train_NeMo/"
 SAVED_NETWORK_PATH="${EXPROOT}/NeMo_${MESH_DIMENSIONS}/"

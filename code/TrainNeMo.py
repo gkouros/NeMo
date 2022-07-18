@@ -12,7 +12,7 @@ from lib.get_n_list import get_n_list
 
 import sys
 sys.path.append(os.path.expanduser('~/projects/thesis/src'))
-from dataloader.transforms import SyntheticOcclusion
+from dataloader.transforms import SyntheticOcclusion, BBoxNoise
 
 
 global args
@@ -81,6 +81,7 @@ occ_path = os.path.join(
     occluders_path, 'occluders_without_%s.npz' % args.type_)
 
 transforms = transforms.Compose([
+    BBoxNoise(0.1),
     SyntheticOcclusion(occ_path, 0.5),
     ColorJitter(),
     GaussianBlur(),
@@ -95,6 +96,7 @@ if unseen_setting:
 
     args.save_dir = args.save_dir.strip('/') + '_azum_' + azum_sel + '/'
 else:
+
     azum_sel = ''
 
 n_img_all = []
